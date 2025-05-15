@@ -1,0 +1,63 @@
+# Flutter/Dart specific
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+pubspec.lock
+
+# Build outputs
+build/
+
+# iOS specific
+ios/Flutter/.last_build_id
+ios/Pods/
+ios/Runner.xcworkspace/
+ios/Runner.xcworkspace/xcuserdata/
+ios/Runner.xcuserdata/
+ios/Flutter/App.framework
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+
+# Android specific
+android/.gradle/
+android/app/build/
+android/app/intermediates/
+android/app/outputs/
+android/local.properties
+android/.idea/
+android/.gradle/
+
+
+
+# Test outputs
+test/coverage/
+
+# Miscellaneous
+*.log
+*.tmp
+*.swp
+*.swo
+*.DS_Store
+*.class
+*.jar
+*.war
+*.iml
+*.lock
+*.tmp
+*.bak
+*.orig
+*.swp
+*.swo
+*.class
+*.jar
+*.war
+*.iml
+
+# IDE specific
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# Other files
+README.md
+analysis_options.yaml

@@ -1,0 +1,76 @@
+{
+  "project_info": {
+    "project_number": "246373093380",
+    "project_id": "pa2-kelompok07",
+    "storage_bucket": "pa2-kelompok07.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:246373093380:android:bfee865e1cd3649980a551",
+        "android_client_info": {
+          "package_name": "com.del.sam"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "246373093380-ids4720dupq3u4k6fbj2uj4pb7cmq8oi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgeAI-XY9MVgatulaeLefJnPDMQU3W6bc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "246373093380-ids4720dupq3u4k6fbj2uj4pb7cmq8oi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:246373093380:android:a0542655c2ecf63a80a551",
+        "android_client_info": {
+          "package_name": "com.example.pa2_kelompok07"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "246373093380-dlcl5k1dqd6701m1145v9ku47kspa1o5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.pa2_kelompok07",
+            "certificate_hash": "647f02d9be53b65485ab6cb722386aac0c66aa51"
+          }
+        },
+        {
+          "client_id": "246373093380-ids4720dupq3u4k6fbj2uj4pb7cmq8oi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgeAI-XY9MVgatulaeLefJnPDMQU3W6bc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "246373093380-ids4720dupq3u4k6fbj2uj4pb7cmq8oi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
