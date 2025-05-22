@@ -57,6 +57,11 @@ class _CancelAppointmentScreenState extends State<CancelAppointmentScreen> {
 
   Future<void> _handleCancel() async {
     showLoadingAnimated(context);
+    if (_cancelJanjiTemu.text.isEmpty) {
+      context.toast.showError("Field tidak boleh kosong");
+      closeLoadingDialog(context);
+      return;
+    }
     try {
       await APIService().cancelAppointment(
         widget.appointmentId,
@@ -168,7 +173,7 @@ class _CancelAppointmentScreenState extends State<CancelAppointmentScreen> {
                   const SizedBox(height: 8),
                   ElevatedButton(
                     onPressed: () {
-                      if (_isButtonEnabled.value) _handleCancel();
+                      _handleCancel();
                     },
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.white,

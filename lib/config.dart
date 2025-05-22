@@ -11,7 +11,10 @@ class Config {
   //       "https://backendpelitapena-production.up.railway.app";
   // ! For Devlopment Server
   // static const String apiUrl = "http://172.30.40.85:8080";
-  static const String apiUrl = "http://172.28.0.190:8080";
+  // static const String apiUrl = "http://172.28.0.190:8080";
+
+  static const String apiUrl = "https://gopelitapena-production.up.railway.app";
+
   static const String AREA_API =
       "https://emsifa.github.io/api-wilayah-indonesia/api/";
   static const String PROVINCES = "provinces";
