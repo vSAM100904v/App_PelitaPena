@@ -68,15 +68,7 @@ class _CancelAppointmentScreenState extends State<CancelAppointmentScreen> {
         _cancelJanjiTemu.text,
       );
       context.toast.showSuccess("Janji temu berhasil dibatalkan");
-      // Fluttertoast.showToast(
-      //   msg: "Janji temu berhasil dibatalkan",
-      //   toastLength: Toast.LENGTH_SHORT,
-      //   gravity: ToastGravity.BOTTOM,
-      //   timeInSecForIosWeb: 1,
-      //   backgroundColor: Colors.green,
-      //   textColor: Colors.white,
-      //   fontSize: 16.0,
-      // );
+     
       closeLoadingDialog(context);
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => const AppointmentPage()),
@@ -84,15 +76,7 @@ class _CancelAppointmentScreenState extends State<CancelAppointmentScreen> {
       );
     } catch (e) {
       context.toast.showError("Janji temu gagal dibatalkan: $e");
-      // Fluttertoast.showToast(
-      //   msg: "Janji temu gagal dibatalkan",
-      //   toastLength: Toast.LENGTH_SHORT,
-      //   gravity: ToastGravity.BOTTOM,
-      //   timeInSecForIosWeb: 1,
-      //   backgroundColor: Colors.red,
-      //   textColor: Colors.white,
-      //   fontSize: 16.0,
-      // );
+     
     }
   }
 
