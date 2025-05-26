@@ -24,6 +24,9 @@ class _UpdateEmergencyContactDialogState
   late Animation<double> _fadeAnimation;
   String? _initialPhone; // Menyimpan data awal dari fetch
 
+  // ** VALIDATION **
+  bool _isPhoneValid = false;
+
   @override
   void initState() {
     super.initState();
@@ -40,9 +43,21 @@ class _UpdateEmergencyContactDialogState
       end: 1.0,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
 
+    // Listener untuk validasi tiap perubahan teks
+    _phoneController.addListener(_validatePhone);
+
     // Fetch data awal hanya sekali di initState
     _fetchInitialData();
     _controller.forward();
+  }
+
+  // Cek: mulai '08', hanya angka, minimal 12 digit
+  void _validatePhone() {
+    final text = _phoneController.text;
+    final pattern = RegExp(r'^08\d{10,}$');
+    setState(() {
+      _isPhoneValid = pattern.hasMatch(text);
+    });
   }
 
   Future<void> _fetchInitialData() async {
@@ -145,8 +160,8 @@ class _UpdateEmergencyContactDialogState
                     ),
                   ),
                   const SizedBox(height: 8),
-                  if (_initialPhone == null &&
-                      _errorMessage == null) // Loading state
+                  if (_initialPhone == null && _errorMessage == null)
+                    // Loading state
                     Center(
                       child: Padding(
                         padding: EdgeInsets.all(responsive.space(SizeScale.md)),
@@ -156,8 +171,8 @@ class _UpdateEmergencyContactDialogState
                         ),
                       ),
                     )
-                  else if (_errorMessage != null &&
-                      _initialPhone == null) // Error state
+                  else if (_errorMessage != null && _initialPhone == null)
+                    // Error state
                     Container(
                       padding: EdgeInsets.all(responsive.space(SizeScale.sm)),
                       decoration: BoxDecoration(
@@ -182,25 +197,48 @@ class _UpdateEmergencyContactDialogState
                         ],
                       ),
                     )
-                  else // Data loaded state
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Colors.grey.shade300),
-                      ),
-                      child: TextField(
-                        controller: _phoneController,
-                        decoration: InputDecoration(
-                          hintText: '+62 813 6060 1108',
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 14,
+                  else
+                    // Data loaded state
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: Colors.grey.shade300),
                           ),
-                          border: InputBorder.none,
+                          child: TextField(
+                            controller: _phoneController,
+                            decoration: InputDecoration(
+                              hintText: '+62 813 6060 1108',
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 14,
+                              ),
+                              border: InputBorder.none,
+                            ),
+                            keyboardType: TextInputType.phone,
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey[800],
+                            ),
+                          ),
                         ),
-                        keyboardType: TextInputType.phone,
-                        style: TextStyle(fontSize: 16, color: Colors.grey[800]),
-                      ),
+                        // Tampilkan validasi jika salah format
+                        if (!_isPhoneValid && _phoneController.text.isNotEmpty)
+                          Padding(
+                            padding: EdgeInsets.only(
+                              top: responsive.space(SizeScale.xs),
+                            ),
+                            child: Text(
+                              'Nomor harus diawali "08", hanya angka, dan minimal 12 digit.',
+                              style: textStyle.dmSansRegular(
+                                size: SizeScale.xs,
+                                color: Colors.red[700],
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
                   if (_errorMessage != null && _initialPhone != null) ...[
                     SizedBox(height: responsive.space(SizeScale.sm)),
@@ -266,7 +304,9 @@ class _UpdateEmergencyContactDialogState
                       const SizedBox(width: 12),
                       ElevatedButton(
                         onPressed:
-                            _isLoading || _initialPhone == null
+                            (_isLoading ||
+                                    _initialPhone == null ||
+                                    !_isPhoneValid)
                                 ? null
                                 : _updateContact,
                         style: ElevatedButton.styleFrom(
@@ -314,6 +354,7 @@ class _UpdateEmergencyContactDialogState
   @override
   void dispose() {
     _controller.dispose();
+    _phoneController.removeListener(_validatePhone);
     _phoneController.dispose();
     super.dispose();
   }

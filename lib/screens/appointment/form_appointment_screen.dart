@@ -22,6 +22,14 @@ class _FormAppointmentScreenState extends State<FormAppointmentScreen> {
   DateTime? _waktuSelesai;
   final _keperluanKonsultasi = TextEditingController();
 
+  /// Daftar hari libur (format: yyyy-MM-dd)
+  final List<DateTime> _holidays = [
+    DateTime(2025, 1, 1), // Tahun Baru
+    DateTime(2025, 5, 1), // Hari Buruh
+    DateTime(2025, 12, 25), // Natal
+    // Tambahkan tanggal libur lainnya di sini
+  ];
+
   Future<void> _selectDate(BuildContext context, bool isStartDate) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
@@ -31,13 +39,28 @@ class _FormAppointmentScreenState extends State<FormAppointmentScreen> {
               : _waktuSelesai ?? DateTime.now(),
       firstDate: DateTime.now(),
       lastDate: DateTime.now().add(const Duration(days: 365)),
+      selectableDayPredicate: (date) {
+        // Hanya Senin (1) sampai Jumat (5)
+        if (date.weekday < DateTime.monday || date.weekday > DateTime.friday) {
+          return false;
+        }
+        // Cek hari libur
+        for (final d in _holidays) {
+          if (d.year == date.year &&
+              d.month == date.month &&
+              d.day == date.day) {
+            return false;
+          }
+        }
+        return true;
+      },
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: ColorScheme.light(
               primary: AppColor.primaryColor,
               onPrimary: Colors.white,
-              onSurface: Colors.black, // Changed to pure black
+              onSurface: Colors.black,
             ),
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
@@ -49,7 +72,6 @@ class _FormAppointmentScreenState extends State<FormAppointmentScreen> {
         );
       },
     );
-
     if (pickedDate != null) {
       final TimeOfDay? pickedTime = await showTimePicker(
         context: context,
@@ -64,7 +86,7 @@ class _FormAppointmentScreenState extends State<FormAppointmentScreen> {
               colorScheme: ColorScheme.light(
                 primary: AppColor.primaryColor,
                 onPrimary: Colors.white,
-                onSurface: Colors.black, // Changed to pure black
+                onSurface: Colors.black,
               ),
               textButtonTheme: TextButtonThemeData(
                 style: TextButton.styleFrom(
@@ -78,6 +100,12 @@ class _FormAppointmentScreenState extends State<FormAppointmentScreen> {
       );
 
       if (pickedTime != null) {
+        // Validasi jam: hanya 08:00 - 17:00
+        if (pickedTime.hour < 8 || pickedTime.hour > 17) {
+          _showErrorDialog('Pilih waktu antara 08:00 dan 17:00.');
+          return;
+        }
+
         setState(() {
           final dateTime = DateTime(
             pickedDate.year,
@@ -211,7 +239,7 @@ class _FormAppointmentScreenState extends State<FormAppointmentScreen> {
                   ),
                 ),
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: Colors.black, // Pure black text
+                  color: Colors.black,
                 ),
                 maxLines: 5,
                 validator: (value) {
@@ -231,7 +259,7 @@ class _FormAppointmentScreenState extends State<FormAppointmentScreen> {
                     child: OutlinedButton(
                       onPressed: () => Navigator.pop(context),
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: Colors.black, // Pure black
+                        foregroundColor: Colors.black,
                         side: const BorderSide(color: Colors.black54),
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
@@ -277,7 +305,7 @@ class _FormAppointmentScreenState extends State<FormAppointmentScreen> {
         Text(
           title,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: const Color.fromARGB(255, 136, 136, 136), // Pure black
+            color: const Color.fromARGB(255, 136, 136, 136),
           ),
         ),
         const SizedBox(height: 4),
@@ -287,12 +315,12 @@ class _FormAppointmentScreenState extends State<FormAppointmentScreen> {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.black54), // Darker border
+            border: Border.all(color: Colors.black54),
           ),
           child: Text(
             value,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: const Color.fromARGB(255, 124, 121, 121), // Pure black
+              color: const Color.fromARGB(255, 124, 121, 121),
             ),
           ),
         ),
@@ -312,7 +340,7 @@ class _FormAppointmentScreenState extends State<FormAppointmentScreen> {
         Text(
           label,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: const Color.fromARGB(255, 123, 122, 122), // Pure black
+            color: const Color.fromARGB(255, 123, 122, 122),
           ),
         ),
         const SizedBox(height: 4),
@@ -327,24 +355,20 @@ class _FormAppointmentScreenState extends State<FormAppointmentScreen> {
               borderRadius: BorderRadius.circular(8),
               border: Border.all(
                 color: const Color.fromARGB(137, 104, 103, 103),
-              ), // Darker border
+              ),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   dateTime != null
-                      ? DateFormat('dd MMM yyyy, HH:mm').format(dateTime)
+                      // Di sini kita pakai hh:mm a untuk 12-hour clock + AM/PM
+                      ? DateFormat('dd MMM yyyy, hh:mm a').format(dateTime)
                       : 'Pilih tanggal & waktu',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color:
                         dateTime != null
-                            ? const Color.fromARGB(
-                              255,
-                              107,
-                              105,
-                              105,
-                            ) // Pure black
+                            ? const Color.fromARGB(255, 107, 105, 105)
                             : const Color.fromARGB(
                               255,
                               131,
@@ -377,7 +401,36 @@ class _FormAppointmentScreenState extends State<FormAppointmentScreen> {
       return;
     }
 
-    if (_waktuSelesai!.isBefore(_waktuDimulai!)) {
+    // Validasi hari dan jam
+    final start = _waktuDimulai!;
+    final end = _waktuSelesai!;
+
+    if (start.weekday < DateTime.monday ||
+        start.weekday > DateTime.friday ||
+        end.weekday < DateTime.monday ||
+        end.weekday > DateTime.friday) {
+      _showErrorDialog(
+        "Janji temu hanya dapat dibuat pada hari Senin hingga Jumat.",
+      );
+      return;
+    }
+
+    for (final d in _holidays) {
+      if ((d.year == start.year &&
+              d.month == start.month &&
+              d.day == start.day) ||
+          (d.year == end.year && d.month == end.month && d.day == end.day)) {
+        _showErrorDialog("Janji temu tidak dapat dibuat pada hari libur.");
+        return;
+      }
+    }
+
+    if (start.hour < 8 || end.hour > 17) {
+      _showErrorDialog("Jam janji temu harus antara 08:00 dan 17:00.");
+      return;
+    }
+
+    if (end.isBefore(start)) {
       _showErrorDialog("Waktu selesai tidak boleh sebelum waktu mulai.");
       return;
     }
@@ -386,8 +439,8 @@ class _FormAppointmentScreenState extends State<FormAppointmentScreen> {
 
     try {
       final response = await APIService().submitAppointment(
-        _waktuDimulai!,
-        _waktuSelesai!,
+        start,
+        end,
         _keperluanKonsultasi.text,
       );
 
@@ -420,17 +473,11 @@ class _FormAppointmentScreenState extends State<FormAppointmentScreen> {
                 context,
               ).textTheme.titleMedium?.copyWith(color: Colors.redAccent),
             ),
-            content: Text(
-              message,
-              style: const TextStyle(color: Colors.black), // Pure black
-            ),
+            content: Text(message, style: const TextStyle(color: Colors.black)),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text(
-                  "OK",
-                  style: TextStyle(color: Colors.black), // Pure black
-                ),
+                child: const Text("OK", style: TextStyle(color: Colors.black)),
               ),
             ],
           ),

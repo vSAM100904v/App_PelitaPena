@@ -25,10 +25,11 @@ class AdminLayout extends StatefulWidget {
 
 class _AdminLayoutState extends State<AdminLayout>
     with TickerProviderStateMixin {
-  // TabController? _tabController;
   MotionTabBarController? _motionTabBarController;
   late final UserProvider _userProvider;
   late final ValueNotifier<int> _selectedTabNotifier;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   void initState() {
     super.initState();
@@ -52,15 +53,14 @@ class _AdminLayoutState extends State<AdminLayout>
   Widget build(BuildContext context) {
     final ResponsiveSizes rs = context.responsive;
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         centerTitle: true,
-        automaticallyImplyLeading: false, // Remove default back button
-        // Removed the leading property to remove the sidebar icon
+        automaticallyImplyLeading: false,
         title: ValueListenableBuilder<int>(
           valueListenable: _selectedTabNotifier,
           builder: (context, selectedTab, _) {
             String title;
-
             switch (selectedTab) {
               case 0:
                 title = "Laporan";
@@ -72,9 +72,8 @@ class _AdminLayoutState extends State<AdminLayout>
                 title = "Chat";
                 break;
               default:
-                title = "Unknown"; // Penanganan untuk nilai yang tidak terduga
+                title = "Unknown";
             }
-
             return Text(
               title,
               style: TextStyle(
@@ -90,35 +89,36 @@ class _AdminLayoutState extends State<AdminLayout>
             builder: (context, userProvider, _) {
               final user = userProvider.user;
               final String? imageUrl = user?.photo_profile;
-
               return Padding(
                 padding: EdgeInsets.only(right: 16),
-                child: CircleAvatar(
-                  radius: 18,
-                  backgroundColor: Colors.white,
+                child: InkWell(
+                  onTap: () {
+                    _scaffoldKey.currentState?.openDrawer();
+                  },
                   child: CircleAvatar(
-                    radius: 16,
+                    radius: 18,
                     backgroundColor: Colors.white,
-                    backgroundImage:
-                        imageUrl != null
-                            ? CachedNetworkImageProvider(imageUrl)
-                            : CachedNetworkImageProvider(Config.fallbackImage),
+                    child: CircleAvatar(
+                      radius: 16,
+                      backgroundColor: Colors.white,
+                      backgroundImage: CachedNetworkImageProvider(
+                        imageUrl ?? Config.fallbackImage,
+                      ),
+                    ),
                   ),
                 ),
               );
             },
           ),
         ],
-        backgroundColor: Color(
-          0xFF7CB9E8,
-        ), // Light blue color matching the screenshot
+        backgroundColor: Color(0xFF7CB9E8),
         elevation: 0,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(bottom: Radius.circular(10)),
         ),
-        toolbarHeight: 56, // Standard height
+        toolbarHeight: 56,
       ),
-      drawer: AppSidebar(), // Keeping the drawer for functionality
+      drawer: AppSidebar(),
       backgroundColor: AppColors.white,
       bottomNavigationBar: MotionTabBar(
         controller: _motionTabBarController,

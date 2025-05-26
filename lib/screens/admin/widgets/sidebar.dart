@@ -61,102 +61,102 @@ class _AppSidebarState extends State<AppSidebar> {
               ],
             ),
           ),
-          _buildMenuItem(
-            context,
-            icon: Icons.home,
-            title: 'Beranda',
-            isActive: true,
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const Beranda()),
-              );
-            },
-          ),
+          // _buildMenuItem(
+          //   context,
+          //   icon: Icons.home,
+          //   title: 'Beranda',
+          //   isActive: true,
+          //   onTap: () {
+          //     Navigator.pop(context);
+          //     Navigator.pushReplacement(
+          //       context,
+          //       MaterialPageRoute(builder: (context) => const Beranda()),
+          //     );
+          //   },
+          // ),
 
-          _buildMenuItem(
-            context,
-            icon: Icons.article,
-            title: 'Konten',
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const Konten()),
-              );
-            },
-          ),
-          _buildMenuItem(
-            context,
-            icon: Icons.event,
-            title: 'Event',
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const Event()),
-              );
-            },
-          ),
-          _buildMenuItem(
-            context,
-            icon: Icons.volunteer_activism,
-            title: 'Donasi',
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const Donasi()),
-              );
-            },
-          ),
-          const Divider(),
-          _buildMenuItem(
-            context,
-            icon: Icons.chat_bubble_outline,
-            title: 'Chat',
-            onTap: () {
-              Navigator.pop(context);
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(const SnackBar(content: Text('Membuka Chat')));
-            },
-          ),
-          _buildMenuItem(
-            context,
-            icon: Icons.warning_amber_outlined,
-            title: 'Peringatan',
-            onTap: () {
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Membuka Peringatan')),
-              );
-            },
-          ),
-          const Divider(),
-          _buildMenuItem(
-            context,
-            icon: Icons.settings,
-            title: 'Pengaturan',
-            onTap: () {
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Membuka Pengaturan')),
-              );
-            },
-          ),
-          _buildMenuItem(
-            context,
-            icon: Icons.help_outline,
-            title: 'Bantuan',
-            onTap: () {
-              Navigator.pop(context);
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(const SnackBar(content: Text('Membuka Bantuan')));
-            },
-          ),
+          // _buildMenuItem(
+          //   context,
+          //   icon: Icons.article,
+          //   title: 'Konten',
+          //   onTap: () {
+          //     Navigator.pop(context);
+          //     Navigator.push(
+          //       context,
+          //       MaterialPageRoute(builder: (context) => const Konten()),
+          //     );
+          //   },
+          // ),
+          // _buildMenuItem(
+          //   context,
+          //   icon: Icons.event,
+          //   title: 'Event',
+          //   onTap: () {
+          //     Navigator.pop(context);
+          //     Navigator.push(
+          //       context,
+          //       MaterialPageRoute(builder: (context) => const Event()),
+          //     );
+          //   },
+          // ),
+          // _buildMenuItem(
+          //   context,
+          //   icon: Icons.volunteer_activism,
+          //   title: 'Donasi',
+          //   onTap: () {
+          //     Navigator.pop(context);
+          //     Navigator.push(
+          //       context,
+          //       MaterialPageRoute(builder: (context) => const Donasi()),
+          //     );
+          //   },
+          // ),
+          // const Divider(),
+          // _buildMenuItem(
+          //   context,
+          //   icon: Icons.chat_bubble_outline,
+          //   title: 'Chat',
+          //   onTap: () {
+          //     Navigator.pop(context);
+          //     ScaffoldMessenger.of(
+          //       context,
+          //     ).showSnackBar(const SnackBar(content: Text('Membuka Chat')));
+          //   },
+          // ),
+          // _buildMenuItem(
+          //   context,
+          //   icon: Icons.warning_amber_outlined,
+          //   title: 'Peringatan',
+          //   onTap: () {
+          //     Navigator.pop(context);
+          //     ScaffoldMessenger.of(context).showSnackBar(
+          //       const SnackBar(content: Text('Membuka Peringatan')),
+          //     );
+          //   },
+          // ),
+          // const Divider(),
+          // _buildMenuItem(
+          //   context,
+          //   icon: Icons.settings,
+          //   title: 'Pengaturan',
+          //   onTap: () {
+          //     Navigator.pop(context);
+          //     ScaffoldMessenger.of(context).showSnackBar(
+          //       const SnackBar(content: Text('Membuka Pengaturan')),
+          //     );
+          //   },
+          // ),
+          // _buildMenuItem(
+          //   context,
+          //   icon: Icons.help_outline,
+          //   title: 'Bantuan',
+          //   onTap: () {
+          //     Navigator.pop(context);
+          //     ScaffoldMessenger.of(
+          //       context,
+          //     ).showSnackBar(const SnackBar(content: Text('Membuka Bantuan')));
+          //   },
+          // ),
           _buildMenuItem(
             context,
             icon: Icons.logout,

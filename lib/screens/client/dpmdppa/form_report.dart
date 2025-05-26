@@ -1403,7 +1403,7 @@ class _FormReportDPMADPPAState extends State<FormReportDPMADPPA>
       "Tanggal Kejadian": tanggalPelaporan,
       "Lokasi Kasus": _kategoriLokasiKasus.text,
       "Kronologi": _kronologiKasus.text,
-      "Gambar": imageFile,
+      // "Gambar": imageFile,
     };
 
     final missingFields =
