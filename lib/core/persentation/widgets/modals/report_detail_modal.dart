@@ -4,10 +4,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pa2_kelompok07/core/helpers/hooks/responsive_sizes.dart';
+import 'package:pa2_kelompok07/core/helpers/hooks/screen_navigator.dart';
 import 'package:pa2_kelompok07/core/helpers/hooks/text_hook.dart';
 import 'package:pa2_kelompok07/core/helpers/hooks/text_style.dart';
 import 'package:pa2_kelompok07/core/helpers/hooks/time_ago.dart';
 import 'package:pa2_kelompok07/core/persentation/widgets/custom_icon.dart';
+import 'package:pa2_kelompok07/core/persentation/widgets/modals/image_modal.dart';
 import 'package:pa2_kelompok07/model/report/list_report_model.dart';
 
 import 'package:flutter/material.dart';
@@ -544,23 +546,40 @@ class _ReportDetailModalState extends State<ReportDetailModal>
                   padding: EdgeInsets.only(
                     right: responsive.space(SizeScale.sm),
                   ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(
-                      responsive.borderRadius(SizeScale.xs),
-                    ),
-                    child: CachedNetworkImage(
-                      imageUrl: dokumentasi.urls[index],
-                      width: responsive.widthPercent(30),
-                      fit: BoxFit.cover,
-                      errorWidget:
-                          (context, error, stackTrace) => Container(
-                            width: responsive.widthPercent(30),
-                            color: Colors.grey[200],
-                            child: Icon(
-                              Icons.broken_image,
-                              color: Colors.grey[400],
-                            ),
+                  child: GestureDetector(
+                    onTap: () {
+                      ScreenNavigator(cx: context).navigate(
+                        FlutterFlowExpandedImageView(
+                          image: CachedNetworkImage(
+                            imageUrl: dokumentasi.urls[index],
+
+                            fit: BoxFit.contain,
                           ),
+                          allowRotation: false,
+                          tag: dokumentasi.urls[index],
+                          useHeroAnimation: true,
+                        ),
+                        NavigatorTweens.rightToLeft(),
+                      );
+                    },
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(
+                        responsive.borderRadius(SizeScale.xs),
+                      ),
+                      child: CachedNetworkImage(
+                        imageUrl: dokumentasi.urls[index],
+                        width: responsive.widthPercent(30),
+                        fit: BoxFit.cover,
+                        errorWidget:
+                            (context, error, stackTrace) => Container(
+                              width: responsive.widthPercent(30),
+                              color: Colors.grey[200],
+                              child: Icon(
+                                Icons.broken_image,
+                                color: Colors.grey[400],
+                              ),
+                            ),
+                      ),
                     ),
                   ),
                 );
