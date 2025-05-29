@@ -574,7 +574,7 @@ class _FormReportDPMADPPAState extends State<FormReportDPMADPPA>
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Buat Laporan 3",
+          "Buat Laporan",
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 20,
@@ -582,7 +582,15 @@ class _FormReportDPMADPPAState extends State<FormReportDPMADPPA>
           ),
         ),
         backgroundColor: AppColor.primaryColor,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          color: AppColor.descColor,
+          onPressed: () {
+            Navigator.pop(context, true);
+          },
+        ),
       ),
+
       body: Stepper(
         steps: getSteps(),
         type: StepperType.horizontal,
@@ -1397,6 +1405,7 @@ class _FormReportDPMADPPAState extends State<FormReportDPMADPPA>
 
   Future<void> submitReport() async {
     // Validasi semua field wajib
+
     String? imageUrl;
     final requiredFields = {
       "Kategori Kekerasan": selectedCategoryId,
@@ -1428,10 +1437,11 @@ class _FormReportDPMADPPAState extends State<FormReportDPMADPPA>
 
     // Proses data
     try {
+      showLoadingAnimated(context);
+
       if (imageFile != null) {
         imageUrl = await _uploadImageToCloudinary(imageFile!);
       }
-      showLoadingAnimated(context);
       final response = await APIService().submitReport(
         selectedCategoryId!,
         tanggalPelaporan!,
@@ -1443,23 +1453,14 @@ class _FormReportDPMADPPAState extends State<FormReportDPMADPPA>
       );
 
       if (response.code == 201) {
-        // Show success toast before navigation
         context.toast.showSuccess('Laporan Anda telah berhasil dikirim');
 
-        // Delay navigation slightly to allow toast to be visible
-        await Future.delayed(const Duration(milliseconds: 1500));
+        // Tambahkan sedikit delay untuk memastikan toast tampil
+        await Future.delayed(const Duration(milliseconds: 300));
 
-        // Navigasi setelah berhasil
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(
-            builder:
-                (context) => const BottomNavigationWidget(
-                  initialIndex: 1,
-                  pages: [HomePage(), ReportScreen(), ProfilePage()],
-                ),
-          ),
-          (Route<dynamic> route) => false,
-        );
+        // Tutup form + kirim sinyal refresh
+        Navigator.pop(context, true);
+
         successLog("Laporan berhasil dikirim.");
       } else {
         errorLog("Gagal mengirim laporan: ${response.message}");

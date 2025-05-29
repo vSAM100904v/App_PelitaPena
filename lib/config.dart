@@ -11,9 +11,9 @@ class Config {
   //       "https://backendpelitapena-production.up.railway.app";
   // ! For Devlopment Server
   // static const String apiUrl = "http://172.30.40.85:8080";
-  // static const String apiUrl = "http://172.28.0.190:8080";
+  static const String apiUrl = "http://192.168.1.80:8080";
 
-  static const String apiUrl = "https://gopelitapena-production.up.railway.app";
+  // static const String apiUrl = "https://gopelitapena-production.up.railway.app";
 
   static const String AREA_API =
       "https://emsifa.github.io/api-wilayah-indonesia/api/";
@@ -45,18 +45,18 @@ class Config {
   static const String getFormByIdAPIPolice =
       "/api/pelaporan-masyarakat-ke-polisi/";
 
-  static const String getViolenceCategory =
-      "/api/masyarakat/kategori-kekerasan";
+  static const String getViolenceCategory = "/api/private/kategori-kekerasan";
 
-  static const String postReport = "/api/masyarakat/buat-laporan";
+  static const String postReport = "/api/private/buat-laporan";
 
   static const String updateNotificationToken =
-      "/api/masyarakat/update-notification-token";
+      "/api/private/update-notification-token";
   static const String postReportKorban =
       "/api/masyarakat/create-korban-kekerasan";
-  static const String getReportByUser = "/api/masyarakat/laporans";
-  static const String getDetailReportByUser = "/api/masyarakat/detail-laporan";
-  static const String cancelReport = "/api/masyarakat/batalkan-laporan";
+  static const String getReportByUser = "/api/private/laporans";
+  static const String getDetailReportByUser = "/api/private/detail-laporan";
+  static const String cancelReport = "/api/private/batalkan-laporan";
+
   static const String changePassword = "/api/masyarakat/change-password";
   static const String createJanjiTemu = "/api/masyarakat/create-janjitemu";
   static const String getJanjiTemu = "/api/masyarakat/janjitemus";
@@ -72,13 +72,13 @@ class Config {
   static const String editEmergencyContactAPI =
       "/api/admin/emergency-contact-edit";
   static const String donationsAPI = "/api/donations";
-  static const String retrieveUserNotification =
-      "/api/masyarakat/retrieve-notification";
-  static const String retrieveUnreadNotificationCount =
-      "/api/masyarakat/unread-notification-count";
 
-  static const String markNotificationAsRead =
-      "/api/masyarakat/read-notification";
+  static const String retrieveUserNotification =
+      "/api/private/retrieve-notification";
+  static const String retrieveUnreadNotificationCount =
+      "/api/private/unread-notification-count";
+  static const String markNotificationAsRead = "/api/private/read-notification";
+
   static const String fallbackImage = "https://picsum.photos/200/300";
 
   // ADMINNN ROUTERR
@@ -88,7 +88,7 @@ class Config {
   static const String updateStatusReportAsProcessAdminRouter =
       "/api/admin/proses-laporan";
   static const String updateStatusReportAsDoneAdminRouter =
-      "/api/admin/proses-laporan";
+      "/api/admin/laporan-selesai";
   static const String getDetailReportByAdmin = "/api/admin/detail-laporan";
   static const String createTrackingReportAdminRouter =
       "/api/admin/create-tracking-laporan";

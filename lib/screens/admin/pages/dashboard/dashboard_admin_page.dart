@@ -1,41 +1,15 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:motion_tab_bar_v2/motion-tab-controller.dart';
-import 'package:pa2_kelompok07/config.dart';
-import 'package:pa2_kelompok07/core/constant/constant.dart';
 
 import 'package:pa2_kelompok07/core/helpers/hooks/responsive_sizes.dart';
-import 'package:pa2_kelompok07/core/helpers/hooks/text_hook.dart';
-import 'package:pa2_kelompok07/core/helpers/hooks/text_style.dart';
-import 'package:pa2_kelompok07/core/helpers/logger/text_logger.dart';
 import 'package:pa2_kelompok07/core/helpers/toasters/toast.dart';
-import 'package:pa2_kelompok07/core/persentation/widgets/atoms/admin_header.dart';
 import 'package:pa2_kelompok07/core/persentation/widgets/atoms/placeholder_component.dart';
-import 'package:pa2_kelompok07/core/persentation/widgets/cards/report_admin_card.dart';
-import 'package:pa2_kelompok07/core/persentation/widgets/dialogs/action_dialog.dart';
 import 'package:pa2_kelompok07/core/persentation/widgets/dialogs/update_emergency_contact.dart';
-import 'package:pa2_kelompok07/core/persentation/widgets/modals/report_detail_modal.dart';
-import 'package:pa2_kelompok07/core/persentation/widgets/views/report_count.dart';
-import 'package:pa2_kelompok07/main.dart';
 import 'package:pa2_kelompok07/model/report/count_report_status.dart';
 import 'package:pa2_kelompok07/model/report/emergency_contact_model.dart';
 
-import 'package:pa2_kelompok07/model/report/list_report_model.dart';
-import 'package:pa2_kelompok07/model/report/report_category_model.dart';
-import 'package:pa2_kelompok07/model/report/report_request_model.dart';
-import 'package:pa2_kelompok07/provider/admin_provider.dart';
-import 'package:pa2_kelompok07/provider/user_provider.dart';
-import 'package:pa2_kelompok07/screens/admin/pages/Donasi/halaman_donasi.dart';
-import 'package:pa2_kelompok07/screens/admin/pages/beranda/admin_dashboard.dart';
-import 'package:pa2_kelompok07/screens/admin/pages/event/halaman_event.dart';
-import 'package:pa2_kelompok07/screens/admin/pages/kategoriKekerasan/halamanbaru_kategori.dart';
-import 'package:pa2_kelompok07/screens/admin/pages/konten/halaman_konten.dart';
 import 'package:pa2_kelompok07/screens/admin/pages/chat/chat_admin_screen.dart';
-import 'package:pa2_kelompok07/screens/client/chat/rooms_client_screen.dart';
 import 'package:pa2_kelompok07/services/api_service.dart';
-import 'package:pa2_kelompok07/utils/loading_dialog.dart';
-import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 class DashboardRootPage extends StatefulWidget {

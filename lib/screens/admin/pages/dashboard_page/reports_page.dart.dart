@@ -1,27 +1,19 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:pa2_kelompok07/config.dart';
 import 'package:pa2_kelompok07/core/constant/constant.dart';
 
 import 'package:pa2_kelompok07/core/helpers/hooks/responsive_sizes.dart';
 import 'package:pa2_kelompok07/core/helpers/hooks/text_hook.dart';
 import 'package:pa2_kelompok07/core/helpers/hooks/text_style.dart';
-import 'package:pa2_kelompok07/core/helpers/logger/text_logger.dart';
+import 'package:pa2_kelompok07/core/helpers/logger/logger.dart';
 import 'package:pa2_kelompok07/core/helpers/toasters/toast.dart';
-import 'package:pa2_kelompok07/core/persentation/widgets/atoms/admin_header.dart';
 import 'package:pa2_kelompok07/core/persentation/widgets/atoms/placeholder_component.dart';
 import 'package:pa2_kelompok07/core/persentation/widgets/cards/report_admin_card.dart';
 import 'package:pa2_kelompok07/core/persentation/widgets/dialogs/action_dialog.dart';
 import 'package:pa2_kelompok07/core/persentation/widgets/dialogs/donwloaded_pdf_dialog.dart';
 import 'package:pa2_kelompok07/core/persentation/widgets/dialogs/filter_reports_dialog.dart';
 import 'package:pa2_kelompok07/core/persentation/widgets/modals/report_detail_modal.dart';
-import 'package:pa2_kelompok07/core/services/pdf_service.dart';
-import 'package:pa2_kelompok07/main.dart';
 
 import 'package:pa2_kelompok07/model/report/list_report_model.dart';
-import 'package:pa2_kelompok07/model/report/report_category_model.dart';
-import 'package:pa2_kelompok07/model/report/report_request_model.dart';
 import 'package:pa2_kelompok07/provider/admin_provider.dart';
 import 'package:pa2_kelompok07/provider/user_provider.dart';
 import 'package:pa2_kelompok07/services/api_service.dart';
@@ -39,6 +31,7 @@ class DashboardViewReportPage extends StatefulWidget {
 class _DashboardViewReportPageState extends State<DashboardViewReportPage>
     with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   late final UserProvider _userProvider;
+  final Logger _logger = Logger("ReportsPage");
   late AdminProvider _reportsNotifier;
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -94,6 +87,7 @@ class _DashboardViewReportPageState extends State<DashboardViewReportPage>
               SizedBox(height: responsive.space(SizeScale.md)),
 
               Row(
+                spacing: responsive.space(SizeScale.md),
                 children: [
                   Expanded(
                     child: SizedBox(
@@ -124,6 +118,30 @@ class _DashboardViewReportPageState extends State<DashboardViewReportPage>
                       ),
                     ),
                   ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(
+                        responsive.borderRadius(SizeScale.md),
+                      ),
+                      border: Border.all(color: Colors.grey[200]!),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: IconButton(
+                      onPressed:
+                          () async => await _reportsNotifier.fetchReports(1),
+                      icon: const Icon(
+                        Icons.refresh_outlined,
+                        color: Color(0xFF79B2E1),
+                      ),
+                    ),
+                  ),
                 ],
               ),
 
@@ -144,7 +162,7 @@ class _DashboardViewReportPageState extends State<DashboardViewReportPage>
                   value: _reportsNotifier,
                   child: Consumer<AdminProvider>(
                     builder: (context, notifier, child) {
-                      if (notifier.isLoading && notifier.reports.isEmpty) {
+                      if (notifier.isLoading) {
                         return const Center(child: CircularProgressIndicator());
                       }
                       if (notifier.error != null && notifier.reports.isEmpty) {
@@ -412,7 +430,8 @@ class _DashboardViewReportPageState extends State<DashboardViewReportPage>
     int index, {
     bool isRefreshing = false,
   }) async {
-    if (laporan.useridMelihat == null) {
+    if (laporan.useridMelihat == null &&
+        laporan.userId != _userProvider.userId) {
       showLoadingAnimated(context);
       try {
         await APIService.instance.updateStatusReportAsReadAdminService(
@@ -423,6 +442,7 @@ class _DashboardViewReportPageState extends State<DashboardViewReportPage>
         final updatedLaporan = laporan.copyWith(
           useridMelihat: _userProvider.userId,
           waktuDilihat: DateTime.now().toIso8601String(),
+          status: "Dilihat",
         );
 
         _reportsNotifier.updateReportByIndex(
@@ -450,7 +470,8 @@ class _DashboardViewReportPageState extends State<DashboardViewReportPage>
         builder: (context) {
           return ReportDetailModal(
             laporan: laporan,
-            isMe: _userProvider.userId == laporan.useridMelihat,
+            isMyFirstView: _userProvider.userId == laporan.useridMelihat,
+            isMyReport: _userProvider.userId == laporan.userId,
             onUpdate:
                 () => showLaporanDetailBottomSheet(
                   context,
@@ -465,10 +486,38 @@ class _DashboardViewReportPageState extends State<DashboardViewReportPage>
                   return ActionDialog(
                     laporan: laporan,
                     onStatusUpdated: (newStatus) async {
+                      _logger.log("STATUSSS $newStatus");
                       try {
-                        print("INIII NILAI STATUSSSSSSSSSSSSSSS $newStatus");
-
                         if (newStatus == "Diproses") {
+                          showLoadingAnimated(context);
+                          _logger.log("LAPORAN DITANDAI prosesss");
+                          await APIService.instance
+                              .updateStatusReportAsDoneAdminService(
+                                accessToken: _userProvider.userToken,
+                                noRegistrasi: laporan.noRegistrasi,
+                                innerContext: innerContext,
+                              );
+
+                          _reportsNotifier.updateReportByIndex(
+                            index,
+                            status: newStatus,
+                          );
+
+                          closeLoadingDialog(context);
+                          Navigator.of(innerContext).pop();
+                        } else if (newStatus == "Selesai") {
+                          showLoadingAnimated(context);
+                          // await APIService.instance
+                          //     .updateStatusReportAsProcessAdminService(
+                          //       accessToken: _userProvider.userToken,
+                          //       noRegistrasi: laporan.noRegistrasi,
+                          //       innerContext: innerContext,
+                          //     );
+                          // _reportsNotifier.updateReportByIndex(
+                          //   index,
+                          //   status: newStatus,
+                          // );
+                          _logger.log("LAPORAN DITANDAI SELESAI");
                           await APIService.instance
                               .updateStatusReportAsDoneAdminService(
                                 accessToken: _userProvider.userToken,
@@ -479,22 +528,11 @@ class _DashboardViewReportPageState extends State<DashboardViewReportPage>
                             index,
                             status: newStatus,
                           );
-                          // Perbarui status lokal di modal
-                        } else if (newStatus == "Selesai") {
-                          await APIService.instance
-                              .updateStatusReportAsProcessAdminService(
-                                accessToken: _userProvider.userToken,
-                                noRegistrasi: laporan.noRegistrasi,
-                                innerContext: innerContext,
-                              );
-                          _reportsNotifier.updateReportByIndex(
-                            index,
-                            status: newStatus,
-                          );
+                          closeLoadingDialog(context);
+                          Navigator.of(innerContext).pop();
                         }
-
-                        Navigator.of(innerContext).pop();
                       } catch (e) {
+                        showLoadingAnimated(context);
                         innerContext.toast.showSuccess(
                           "Status berhasil diubah ke $newStatus",
                         );

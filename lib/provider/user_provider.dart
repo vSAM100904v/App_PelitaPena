@@ -37,10 +37,8 @@ class UserProvider with ChangeNotifier {
   Future<void> _initialize() async {
     await loadUserToken();
     if (isLoggedIn) {
-      if (_user?.role != "admin") {
-        await _checkAndUpdateTokenOnLogin();
-        await fetchUnreadCount();
-      }
+      await _checkAndUpdateTokenOnLogin();
+      await fetchUnreadCount();
     }
   }
 
@@ -58,17 +56,15 @@ class UserProvider with ChangeNotifier {
       await setUserToken(_userToken!);
       await setUserDetails(_user!);
 
-      if (response.data.role != null && response.data.role != "admin") {
-        await _checkAndUpdateTokenOnLogin();
+      await _checkAndUpdateTokenOnLogin();
 
-        final pendingNotification =
-            await NotificationService.instance.getPendingNotification();
-        if (pendingNotification != null) {
-          NotificationService.instance.navigateBasedOnNotification(
-            pendingNotification,
-          );
-          await NotificationService.instance.clearPendingNotification();
-        }
+      final pendingNotification =
+          await NotificationService.instance.getPendingNotification();
+      if (pendingNotification != null) {
+        NotificationService.instance.navigateBasedOnNotification(
+          pendingNotification,
+        );
+        await NotificationService.instance.clearPendingNotification();
       }
 
       notifyListeners();
@@ -179,10 +175,7 @@ class UserProvider with ChangeNotifier {
   }
 
   Future<void> _checkAndUpdateTokenOnLogin() async {
-    if (!isLoggedIn ||
-        userId == null ||
-        _isTokenBeingHandled ||
-        _user?.role == "admin") {
+    if (!isLoggedIn || userId == null || _isTokenBeingHandled) {
       _logger.log(
         _isTokenBeingHandled
             ? "Token already being handled"

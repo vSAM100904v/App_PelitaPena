@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:pa2_kelompok07/core/helpers/hooks/responsive_sizes.dart';
 import 'package:pa2_kelompok07/core/models/reported_chat_model.dart';
-import 'package:pa2_kelompok07/styles/color.dart';
 
 class ReportedChatDetailModal extends StatefulWidget {
   final ReportedChat chatReport;

@@ -1,10 +1,7 @@
 import 'dart:io';
-import 'package:flutter/material.dart';
-import 'package:open_file/open_file.dart';
 import 'package:pa2_kelompok07/core/services/pdf_service.dart';
 import 'package:pa2_kelompok07/model/report/list_report_model.dart';
 import 'package:pa2_kelompok07/provider/admin_provider.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
