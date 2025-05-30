@@ -122,7 +122,7 @@ class _BottomNavigationWidgetState extends State<BottomNavigationWidget> {
                   padding: EdgeInsets.only(bottom: 4),
                   child: Icon(Icons.chat_bubble_outline),
                 ),
-                label: 'Chat',
+                label: 'Konsultasi',
               ),
               BottomNavigationBarItem(
                 icon: Padding(

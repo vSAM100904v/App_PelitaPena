@@ -68,7 +68,10 @@ class _FormReportDPMADPPAState extends State<FormReportDPMADPPA>
       List<dynamic> provincesJson = json.decode(response.body);
       setState(() {
         provinciesPelaporan =
-            provincesJson.map((json) => Provincies.fromJson(json)).toList();
+            provincesJson
+                .map((json) => Provincies.fromJson(json))
+                .where((province) => province.id == '12') // Sumatera Utara
+                .toList();
       });
     } else {
       throw Exception('Failed to load provinces');
@@ -82,7 +85,10 @@ class _FormReportDPMADPPAState extends State<FormReportDPMADPPA>
     var response = await http.get(url);
     if (response.statusCode == 200) {
       List<dynamic> regenciesJson = json.decode(response.body);
-      return regenciesJson.map((json) => Cities.fromJson(json)).toList();
+      return regenciesJson
+          .map((json) => Cities.fromJson(json))
+          .where((regency) => regency.id == '1206') // Toba Samosir
+          .toList();
     } else {
       throw Exception('Failed to load regencies');
     }
@@ -179,7 +185,10 @@ class _FormReportDPMADPPAState extends State<FormReportDPMADPPA>
     var response = await http.get(url);
     if (response.statusCode == 200) {
       List<dynamic> regenciesJson = json.decode(response.body);
-      return regenciesJson.map((json) => Cities.fromJson(json)).toList();
+      return regenciesJson
+          .map((json) => Cities.fromJson(json))
+          .where((regency) => regency.id == '1208') // Toba Samosir
+          .toList();
     } else {
       throw Exception('Failed to load regencies');
     }
@@ -296,7 +305,10 @@ class _FormReportDPMADPPAState extends State<FormReportDPMADPPA>
     var response = await http.get(url);
     if (response.statusCode == 200) {
       List<dynamic> regenciesJson = json.decode(response.body);
-      return regenciesJson.map((json) => Cities.fromJson(json)).toList();
+      return regenciesJson
+          .map((json) => Cities.fromJson(json))
+          .where((regency) => regency.id == '1208') // Toba Samosir
+          .toList();
     } else {
       throw Exception('Failed to load regencies');
     }
@@ -728,34 +740,25 @@ class _FormReportDPMADPPAState extends State<FormReportDPMADPPA>
                     style: TextStyle(fontSize: 12),
                   ),
                   const SizedBox(height: 10),
-                  ListTile(
-                    title: Text(
-                      "Tanggal Kejadian: ${tanggalPelaporan != null ? DateFormat('yyyy/MM/dd').format(tanggalPelaporan!) : 'Pilih tanggal'}",
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey), // Garis tipis
+                      borderRadius: BorderRadius.circular(
+                        8,
+                      ), // Sudut melengkung
                     ),
-                    trailing: Icon(Icons.calendar_today),
-                    onTap: () {
-                      _selectDate(context);
-                    },
-                  ),
-                  const SizedBox(height: 10),
-                  const Text(
-                    "Kategori Lokasi Kasus",
-                    style: TextStyle(fontSize: 12),
-                  ),
-                  const SizedBox(height: 10),
-                  TextFormField(
-                    controller: _kategoriLokasiKasus,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: 'Kategori Lokasi Kasus',
-                      hintStyle: TextStyle(color: Colors.grey),
+                    child: ListTile(
+                      title: Text(
+                        "Tanggal Kejadian: ${tanggalPelaporan != null ? DateFormat('yyyy/MM/dd').format(tanggalPelaporan!) : 'Pilih tanggal'}",
+                        style: TextStyle(fontSize: 14),
+                      ),
+                      trailing: Icon(Icons.calendar_today),
+                      onTap: () {
+                        _selectDate(
+                          context,
+                        ); // Pastikan fungsi ini didefinisikan
+                      },
                     ),
-                    maxLines: 1,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Isi tidak boleh kosong';
-                      }
-                    },
                   ),
                   const SizedBox(height: 20),
                   provinciesPelaporan.isEmpty
@@ -1401,7 +1404,7 @@ class _FormReportDPMADPPAState extends State<FormReportDPMADPPA>
     final requiredFields = {
       "Kategori Kekerasan": selectedCategoryId,
       "Tanggal Kejadian": tanggalPelaporan,
-      "Lokasi Kasus": _kategoriLokasiKasus.text,
+      // "Lokasi Kasus": _kategoriLokasiKasus.text,
       "Kronologi": _kronologiKasus.text,
       // "Gambar": imageFile,
     };

@@ -27,13 +27,31 @@ class _CarouselLoadingState extends State<CarouselLoading> {
   int _currentCarousel = 0;
   final CarouselController _carouselController = CarouselController();
 
-  // Softer color palette with less contrast
-  final Color primaryColor = const Color(0xFF6B7DB3); // Softer indigo
-  final Color phoneColor = const Color(0xFFE57373); // Softer pink
-  final Color formColor = const Color(0xFFFFB74D); // Softer orange
-  final Color chatColor = const Color(0xFF4DB6AC); // Softer teal
-  final Color appointmentColor = const Color(0xFF64B5F6); // Softer blue
-  final Color backgroundColor = const Color(0xFFF5F7FA); // Light blue-gray
+  // Enhanced color palette for better UX
+  final Color emergencyColor = const Color(0xFFE53E3E); // Red for emergency
+  final Color phoneColor = const Color(
+    0xFFFF6B6B,
+  ); // Coral pink for phone (matching image)
+  final Color formColor = const Color.fromARGB(
+    255,
+    253,
+    161,
+    2,
+  ); // Changed to orange for form
+  final Color chatColor = const Color.fromARGB(
+    255,
+    90,
+    213,
+    137,
+  ); // Purple for chat
+  final Color appointmentColor = const Color.fromARGB(
+    255,
+    46,
+    186,
+    214,
+  ); // Amber for appointment
+  final Color backgroundColor = const Color(0xFFF7FAFC); // Very light gray
+  final Color cardBackground = Colors.white;
 
   @override
   void initState() {
@@ -58,109 +76,117 @@ class _CarouselLoadingState extends State<CarouselLoading> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // const SizedBox(height: 25),
+
+            // Header with emergency info
+            // Container(
+            //   margin: const EdgeInsets.symmetric(horizontal: 20),
+            //   padding: const EdgeInsets.all(16),
+            //   decoration: BoxDecoration(
+            //     color: emergencyColor.withOpacity(0.1),
+            //     borderRadius: BorderRadius.circular(12),
+            //     border: Border.all(color: emergencyColor.withOpacity(0.3)),
+            //   ),
+            //   child: Row(
+            //     children: [
+            //       Icon(Icons.info_outline, color: emergencyColor, size: 24),
+            //       const SizedBox(width: 12),
+            //       Expanded(
+            //         child: Column(
+            //           crossAxisAlignment: CrossAxisAlignment.start,
+            //           children: [
+            //             Text(
+            //               "Butuh Bantuan Segera?",
+            //               style: TextStyle(
+            //                 fontSize: 16,
+            //                 fontWeight: FontWeight.bold,
+            //                 color: emergencyColor,
+            //               ),
+            //             ),
+            //             const SizedBox(height: 4),
+            //             Text(
+            //               "Pilih cara pelaporan yang paling sesuai dengan situasi Anda",
+            //               style: TextStyle(
+            //                 fontSize: 13,
+            //                 color: Colors.grey[700],
+            //               ),
+            //             ),
+            //           ],
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
             const SizedBox(height: 25),
+
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Removed star icon as requested
                   Text(
-                    "Layanan Utama",
+                    "Cara Melaporkan",
                     style: TextStyle(
-                      fontSize: 20,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    "Pilih metode pelaporan yang paling mudah untuk Anda",
+                    style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Special reporting buttons (Phone and Form) - matching the image design
+                  Row(
+                    children: [
+                      Expanded(child: phoneButtonSpecial()),
+                      const SizedBox(width: 20),
+                      Expanded(child: formButtonSpecial()),
+                    ],
+                  ),
+
+                  const SizedBox(height: 25),
+
+                  // Divider
+                  Container(
+                    height: 1,
+                    color: Colors.grey[300],
+                    margin: const EdgeInsets.symmetric(vertical: 10),
+                  ),
+
+                  const SizedBox(height: 15),
+
+                  Text(
+                    "Layanan Lainnya",
+                    style: TextStyle(
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: Colors.black87,
                     ),
                   ),
                   const SizedBox(height: 15),
 
-                  // Main service cards - taller and slightly wider
-                  GridView.count(
-                    shrinkWrap: true,
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 12, // Reduced from 15 to make cards wider
-                    mainAxisSpacing: 12, // Reduced from 15 to make cards wider
-                    childAspectRatio: 0.85, // Made cards taller (was 1.0)
-                    physics: const NeverScrollableScrollPhysics(),
-                    children: [
-                      layananCard(
-                        "Laporkan via telepon",
-                        Icons.phone_in_talk,
-                        phoneColor,
-                        () async {
-                          const url = 'tel:081397739993';
-                          if (await canLaunch(url)) {
-                            await launch(url);
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Tidak dapat membuka dialer'),
-                              ),
-                            );
-                          }
-                        },
-                      ),
-                      layananCard(
-                        "Laporkan via form",
-                        Icons.assignment,
-                        formColor,
-                        () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const ReportScreen(),
-                            ),
-                          );
-                        },
-                      ),
-                      layananCard("Chat langsung", Icons.chat, chatColor, () {
-                        final userProvider = Provider.of<UserProvider>(
-                          context,
-                          listen: false,
-                        );
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (_) => ClientChatPageSelf(
-                                  userId:
-                                      userProvider.user?.id.toString() ??
-                                      'admin',
-                                  userRole: 'client',
-                                  currentUserName:
-                                      userProvider.user?.full_name ?? 'Client',
-                                  userToken: userProvider.userToken ?? '',
-                                ),
-                          ),
-                        );
-                      }),
-                      layananCard(
-                        "Janji temu",
-                        Icons.event_note,
-                        appointmentColor,
-                        () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const AppointmentPage(),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
+                  // Chat button
+                  chatButtonEnhanced(),
+
+                  const SizedBox(width: 15),
+
+                  // Appointment button
+                  appointmentButtonEnhanced(),
                 ],
               ),
             ),
-            const SizedBox(height: 25),
+            const SizedBox(height: 50),
 
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: buildNavigateSection("Informasi dan Berita", scaleFactor),
             ),
 
-            const SizedBox(height: 10),
+            const SizedBox(height: 30),
 
             // Artikel Carousel
             Padding(
@@ -216,6 +242,434 @@ class _CarouselLoadingState extends State<CarouselLoading> {
     );
   }
 
+  // Phone button matching the image design with user-friendly enhancements
+  Widget phoneButtonSpecial() {
+    return Column(
+      children: [
+        // Circular icon button with enhanced shadow
+        Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: phoneColor,
+            boxShadow: [
+              BoxShadow(
+                color: phoneColor.withOpacity(0.4),
+                blurRadius: 20,
+                spreadRadius: 3,
+                offset: const Offset(0, 8),
+              ),
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 10,
+                spreadRadius: 1,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(40),
+              onTap: () async {
+                const url = 'tel:081397739993';
+                if (await canLaunch(url)) {
+                  await launch(url);
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: const Text('Tidak dapat membuka dialer'),
+                      backgroundColor: emergencyColor,
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                }
+              },
+              child: Container(
+                width: 80,
+                height: 80,
+                decoration: const BoxDecoration(shape: BoxShape.circle),
+                child: const Icon(Icons.phone, color: Colors.white, size: 40),
+              ),
+            ),
+          ),
+        ),
+
+        const SizedBox(height: 16),
+
+        // Rounded rectangular button with enhanced design
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30),
+            boxShadow: [
+              BoxShadow(
+                color: phoneColor.withOpacity(0.3),
+                blurRadius: 15,
+                spreadRadius: 2,
+                offset: const Offset(0, 6),
+              ),
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 8,
+                spreadRadius: 1,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Material(
+            color: phoneColor,
+            borderRadius: BorderRadius.circular(30),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(30),
+              onTap: () async {
+                const url = 'tel:081397739993';
+                if (await canLaunch(url)) {
+                  await launch(url);
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: const Text('Tidak dapat membuka dialer'),
+                      backgroundColor: emergencyColor,
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                }
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 16,
+                ),
+                child: Column(
+                  children: [
+                    const Text(
+                      "Hubungi kami",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 4),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Text(
+                        "TERCEPAT",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // Form button matching the image design with user-friendly enhancements
+  Widget formButtonSpecial() {
+    return Column(
+      children: [
+        // Circular icon button with enhanced shadow
+        Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: formColor,
+            boxShadow: [
+              BoxShadow(
+                color: formColor.withOpacity(0.4),
+                blurRadius: 20,
+                spreadRadius: 3,
+                offset: const Offset(0, 8),
+              ),
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 10,
+                spreadRadius: 1,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(40),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const ReportScreen()),
+                );
+              },
+              child: Container(
+                width: 80,
+                height: 80,
+                decoration: const BoxDecoration(shape: BoxShape.circle),
+                child: const Icon(
+                  Icons.description,
+                  color: Colors.white,
+                  size: 40,
+                ),
+              ),
+            ),
+          ),
+        ),
+
+        const SizedBox(height: 16),
+
+        // Rounded rectangular button with enhanced design
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30),
+            boxShadow: [
+              BoxShadow(
+                color: formColor.withOpacity(0.3),
+                blurRadius: 15,
+                spreadRadius: 2,
+                offset: const Offset(0, 6),
+              ),
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 8,
+                spreadRadius: 1,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Material(
+            color: formColor,
+            borderRadius: BorderRadius.circular(30),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(30),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const ReportScreen()),
+                );
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 16,
+                ),
+                child: Column(
+                  children: [
+                    const Text(
+                      "Ajukan laporan",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 4),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Text(
+                        "DETAIL",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // Enhanced chat button
+  Widget chatButtonEnhanced() {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 15),
+      decoration: BoxDecoration(
+        color: cardBackground,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: chatColor.withOpacity(0.3)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            blurRadius: 10,
+            spreadRadius: 1,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(16),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: () {
+            final userProvider = Provider.of<UserProvider>(
+              context,
+              listen: false,
+            );
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder:
+                    (_) => ClientChatPageSelf(
+                      userId: userProvider.user?.id.toString() ?? 'admin',
+                      userRole: 'client',
+                      currentUserName: userProvider.user?.full_name ?? 'Client',
+                      userToken: userProvider.userToken ?? '',
+                    ),
+              ),
+            );
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: chatColor.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    Icons.chat_bubble_outline,
+                    color: chatColor,
+                    size: 28,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        "Konsultasi",
+                        style: TextStyle(
+                          color: chatColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        "Diskusi interaktif dengan petugas",
+                        style: TextStyle(color: Colors.grey[600], fontSize: 13),
+                      ),
+                      const SizedBox(height: 8),
+                    ],
+                  ),
+                ),
+                Icon(Icons.arrow_forward_ios, color: chatColor, size: 18),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Enhanced appointment button
+  Widget appointmentButtonEnhanced() {
+    return Container(
+      decoration: BoxDecoration(
+        color: cardBackground,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: appointmentColor.withOpacity(0.3)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            blurRadius: 10,
+            spreadRadius: 1,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(16),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const AppointmentPage()),
+            );
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: appointmentColor.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    Icons.event_note,
+                    color: appointmentColor,
+                    size: 28,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        "Buat Janji Temu",
+                        style: TextStyle(
+                          color: appointmentColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        "Jadwalkan pertemuan untuk konsultasi mendalam",
+                        style: TextStyle(color: Colors.grey[600], fontSize: 13),
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(
+                  Icons.arrow_forward_ios,
+                  color: appointmentColor,
+                  size: 18,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   CarouselSlider buildCarousel(List<Content> contents, double scaleFactor) {
     return CarouselSlider(
       options: CarouselOptions(
@@ -238,9 +692,7 @@ class _CarouselLoadingState extends State<CarouselLoading> {
                 color: Colors.white,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withOpacity(
-                      0.2,
-                    ), // Reduced shadow opacity
+                    color: Colors.grey.withOpacity(0.2),
                     blurRadius: 8,
                     spreadRadius: 1,
                     offset: const Offset(0, 3),
@@ -305,7 +757,7 @@ class _CarouselLoadingState extends State<CarouselLoading> {
           child: Text(
             "Lihat semua",
             style: TextStyle(
-              color: primaryColor,
+              color: Colors.blue[600],
               fontSize: 14 * scaleFactor,
               fontWeight: FontWeight.w600,
             ),
@@ -377,9 +829,7 @@ class _CarouselLoadingState extends State<CarouselLoading> {
                 color: Colors.white,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withOpacity(
-                      0.2,
-                    ), // Reduced shadow opacity
+                    color: Colors.grey.withOpacity(0.2),
                     blurRadius: 8,
                     spreadRadius: 1,
                     offset: const Offset(0, 3),
@@ -405,9 +855,7 @@ class _CarouselLoadingState extends State<CarouselLoading> {
                         begin: Alignment.bottomCenter,
                         end: Alignment.topCenter,
                         colors: [
-                          Colors.black.withOpacity(
-                            0.6,
-                          ), // Slightly reduced opacity
+                          Colors.black.withOpacity(0.6),
                           Colors.transparent,
                         ],
                       ),
@@ -435,67 +883,4 @@ class _CarouselLoadingState extends State<CarouselLoading> {
       ),
     );
   }
-}
-
-// Enhanced service card - taller and with softer colors
-Widget layananCard(
-  String title,
-  IconData icon,
-  Color color,
-  VoidCallback onTap,
-) {
-  return Container(
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(20),
-      boxShadow: [
-        BoxShadow(
-          color: color.withOpacity(0.3), // Reduced shadow opacity
-          blurRadius: 10,
-          spreadRadius: 1,
-          offset: const Offset(0, 3),
-        ),
-      ],
-    ),
-    child: Material(
-      color: color,
-      borderRadius: BorderRadius.circular(20),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(20),
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Icon with subtle background
-              Container(
-                padding: const EdgeInsets.all(14),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  icon,
-                  color: Colors.white,
-                  size: 34,
-                ), // Slightly larger icon
-              ),
-              const SizedBox(height: 20), // Increased spacing
-              Text(
-                title,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              // Extra space at bottom to make card appear taller
-              const SizedBox(height: 6),
-            ],
-          ),
-        ),
-      ),
-    ),
-  );
 }

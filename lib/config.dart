@@ -16,7 +16,7 @@ class Config {
   static const String apiUrl = "https://gopelitapena-production.up.railway.app";
 
   static const String AREA_API =
-      "https://emsifa.github.io/api-wilayah-indonesia/api/";
+      "https://www.emsifa.com/api-wilayah-indonesia/api/districts/1206.json";
   static const String PROVINCES = "provinces";
   static const String CITIES = "regencies";
   static const String DISTRICTS = "districts";

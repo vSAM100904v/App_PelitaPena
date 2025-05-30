@@ -17,7 +17,7 @@ import 'package:provider/provider.dart';
 class AdminLayout extends StatefulWidget {
   const AdminLayout({super.key});
 
-  final String title = "Admin Pedika App";
+  final String title = "Admin PelitaPena";
 
   @override
   _AdminLayoutState createState() => _AdminLayoutState();
