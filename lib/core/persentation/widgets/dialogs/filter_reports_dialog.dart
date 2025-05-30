@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:pa2_kelompok07/core/helpers/hooks/responsive_sizes.dart';
 import 'package:pa2_kelompok07/core/helpers/hooks/text_style.dart';
 import 'package:pa2_kelompok07/core/interface/filter_abstract.dart';
-import 'package:pa2_kelompok07/provider/admin_provider.dart';
 
 class ReportFilterDropdown extends StatefulWidget {
   final ReportFiltering adminProvider;
