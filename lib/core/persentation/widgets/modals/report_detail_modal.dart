@@ -1,32 +1,30 @@
-import 'dart:math' as AppColors;
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:pa2_kelompok07/core/helpers/hooks/responsive_sizes.dart';
 import 'package:pa2_kelompok07/core/helpers/hooks/screen_navigator.dart';
 import 'package:pa2_kelompok07/core/helpers/hooks/text_hook.dart';
 import 'package:pa2_kelompok07/core/helpers/hooks/text_style.dart';
-import 'package:pa2_kelompok07/core/helpers/hooks/time_ago.dart';
 import 'package:pa2_kelompok07/core/persentation/widgets/custom_icon.dart';
 import 'package:pa2_kelompok07/core/persentation/widgets/modals/image_modal.dart';
 import 'package:pa2_kelompok07/model/report/list_report_model.dart';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pa2_kelompok07/screens/admin/pages/Laporan/component/tracking_detail_page.dart';
+import 'package:pa2_kelompok07/screens/admin/pages/chat/chat_admin_screen.dart';
 
 class ReportDetailModal extends StatefulWidget {
   final ListLaporanModel laporan;
   final VoidCallback onUpdate;
   final Function(BuildContext) onOpenDialog;
-  final bool isMe;
+  final bool isMyFirstView;
+  final bool isMyReport;
   const ReportDetailModal({
     Key? key,
     required this.laporan,
     required this.onUpdate,
     required this.onOpenDialog,
-    required this.isMe,
+    required this.isMyFirstView,
+    required this.isMyReport,
   }) : super(key: key);
 
   @override
@@ -153,28 +151,35 @@ class _ReportDetailModalState extends State<ReportDetailModal>
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   _buildStatusHeader(context),
-                  if (widget.laporan.status == "Laporan masuk" ||
-                      widget.laporan.status == "Dilihat")
-                    GestureDetector(
-                      onTap: _openActionDialog,
-                      child: CustomIconButton(
-                        icon: Icons.add_circle,
-                        color: Color.fromARGB(255, 21, 192, 69),
+                  if (!widget.isMyReport) ...[
+                    if (widget.laporan.status == "Laporan masuk" ||
+                        widget.laporan.status == "Dilihat")
+                      GestureDetector(
+                        onTap: _openActionDialog,
+                        child: CustomIconButton(
+                          icon: Icons.add_circle,
+                          color: Color.fromARGB(255, 21, 192, 69),
+                        ),
                       ),
-                    ),
 
-                  if (widget.laporan.status == "Diproses")
-                    GestureDetector(
-                      onTap: _openActionDialog,
-                      child: CustomIconButton(
-                        icon: Icons.check,
-                        color: Color.fromARGB(255, 44, 192, 21),
+                    if (widget.laporan.status == "Diproses")
+                      GestureDetector(
+                        onTap: _openActionDialog,
+                        child: CustomIconButton(
+                          icon: Icons.check,
+                          color: Color.fromARGB(255, 44, 192, 21),
+                        ),
                       ),
-                    ),
+                  ],
                 ],
               ),
               SizedBox(height: responsive.space(SizeScale.lg)),
 
+              _buildDetailSection(
+                icon: Icons.calendar_today,
+                title: 'Tanggal Pelaporan',
+                value: widget.laporan.userId.toString(),
+              ),
               _buildDetailSection(
                 icon: Icons.calendar_today,
                 title: 'Tanggal Pelaporan',
@@ -221,147 +226,157 @@ class _ReportDetailModalState extends State<ReportDetailModal>
               SizedBox(height: responsive.space(SizeScale.lg)),
               _buildDokumentasiSection(context),
               SizedBox(height: responsive.space(SizeScale.lg)),
-              if (widget.laporan.useridMelihat != null) ...[
-                Text(
-                  'Admin yang melihat laporan',
-                  style: textStyle.onestBold(
-                    size: SizeScale.lg,
-                    color: Colors.black,
-                  ),
-                ),
-                Card(
-                  elevation: 0,
-                  color: theme.colorScheme.surfaceVariant.withOpacity(0.2),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                      responsive.borderRadius(SizeScale.sm),
+
+              if (!widget.isMyReport) ...[
+                if (widget.laporan.useridMelihat != null) ...[
+                  Text(
+                    'Admin yang melihat laporan',
+                    style: textStyle.onestBold(
+                      size: SizeScale.lg,
+                      color: Colors.black,
                     ),
                   ),
-                  child: Padding(
-                    padding: EdgeInsets.all(responsive.space(SizeScale.md)),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "ID Petugas",
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: theme.colorScheme.onSurface.withOpacity(
-                                  0.6,
-                                ),
-                              ),
-                            ),
-                            Text(
-                              widget.isMe
-                                  ? "Anda petugas yang melihat"
-                                  : widget.laporan.useridMelihat.toString(),
-                              style: theme.textTheme.bodyLarge?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                        if (widget.laporan.waktuDilihat != null)
+                  Card(
+                    elevation: 0,
+                    color: theme.colorScheme.surfaceVariant.withOpacity(0.2),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                        responsive.borderRadius(SizeScale.sm),
+                      ),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.all(responsive.space(SizeScale.md)),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Waktu Dilihat",
+                                "ID Petugas",
                                 style: theme.textTheme.bodySmall?.copyWith(
                                   color: theme.colorScheme.onSurface
                                       .withOpacity(0.6),
                                 ),
                               ),
                               Text(
-                                _formatDate(
-                                  DateTime.parse(widget.laporan!.waktuDilihat!),
-                                ),
+                                widget.isMyFirstView
+                                    ? "Anda petugas yang melihat"
+                                    : widget.laporan.useridMelihat.toString(),
                                 style: theme.textTheme.bodyLarge?.copyWith(
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ],
                           ),
+                          if (widget.laporan.waktuDilihat != null)
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Waktu Dilihat",
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: theme.colorScheme.onSurface
+                                        .withOpacity(0.6),
+                                  ),
+                                ),
+                                Text(
+                                  _formatDate(
+                                    DateTime.parse(
+                                      widget.laporan!.waktuDilihat!,
+                                    ),
+                                  ),
+                                  style: theme.textTheme.bodyLarge?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
 
-                        SizedBox(height: responsive.space(SizeScale.sm)),
-                        Divider(
-                          height: 1,
-                          color: theme.dividerColor.withOpacity(0.2),
-                        ),
-                        SizedBox(height: responsive.space(SizeScale.sm)),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Tracking Laporan",
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: theme.colorScheme.onSurface.withOpacity(
-                                  0.6,
+                          SizedBox(height: responsive.space(SizeScale.sm)),
+                          Divider(
+                            height: 1,
+                            color: theme.dividerColor.withOpacity(0.2),
+                          ),
+                          SizedBox(height: responsive.space(SizeScale.sm)),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Tracking Laporan",
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: theme.colorScheme.onSurface
+                                      .withOpacity(0.6),
                                 ),
                               ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder:
-                                        (context) => TrackingPageAdmin(
-                                          noRegistrasi:
-                                              widget.laporan.noRegistrasi,
-                                          isAdmin: true,
-                                        ),
-                                  ),
-                                );
-                              },
-                              child: CustomIconButton(
-                                icon: Icons.chevron_right,
-                                color: Colors.black,
-                                iconSize: responsive.space(SizeScale.lg),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) => TrackingPageAdmin(
+                                            noRegistrasi:
+                                                widget.laporan.noRegistrasi,
+                                            isAdmin: true,
+                                          ),
+                                    ),
+                                  );
+                                },
+                                child: CustomIconButton(
+                                  icon: Icons.chevron_right,
+                                  color: Colors.black,
+                                  iconSize: responsive.space(SizeScale.lg),
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
+                            ],
+                          ),
 
-                        SizedBox(height: responsive.space(SizeScale.sm)),
-                      ],
+                          SizedBox(height: responsive.space(SizeScale.sm)),
+                        ],
+                      ),
                     ),
                   ),
-                ),
+                ] else ...[
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Buat Tracking",
+                        style: textStyle.onestBold(
+                          size: SizeScale.lg,
+                          color: Colors.black,
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) => TrackingPageAdmin(
+                                    noRegistrasi: widget.laporan.noRegistrasi,
+                                    isAdmin: true,
+                                  ),
+                            ),
+                          );
+                        },
+                        child: CustomIconButton(
+                          icon: Icons.chevron_right,
+                          color: Colors.black,
+                          iconSize: responsive.space(SizeScale.lg),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ] else ...[
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Buat Tracking",
-                      style: textStyle.onestBold(
-                        size: SizeScale.lg,
-                        color: Colors.black,
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (context) => TrackingPageAdmin(
-                                  noRegistrasi: widget.laporan.noRegistrasi,
-                                  isAdmin: true,
-                                ),
-                          ),
-                        );
-                      },
-                      child: CustomIconButton(
-                        icon: Icons.chevron_right,
-                        color: Colors.black,
-                        iconSize: responsive.space(SizeScale.lg),
-                      ),
-                    ),
-                  ],
+                ChatAlert(
+                  title: "Aksi Tidak Diizinkan",
+                  description:
+                      "Anda tidak dapat melakukan review atau tindakan pada laporan yang Anda buat sendiri. Mohon menunggu respons dari admin terkait untuk proses selanjutnya.",
+                  onReportTap: null, // Tidak perlu aksi onTap di alert ini
                 ),
               ],
             ],

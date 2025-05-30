@@ -6,7 +6,6 @@ import 'package:pa2_kelompok07/core/helpers/hooks/responsive_sizes.dart';
 import 'package:pa2_kelompok07/core/helpers/hooks/text_hook.dart';
 import 'package:pa2_kelompok07/core/helpers/hooks/text_style.dart';
 import 'package:pa2_kelompok07/config.dart' as Routes;
-import 'package:pa2_kelompok07/screens/client/chat/rooms_client_screen.dart';
 
 class ReportBottomSheet {
   static void show({

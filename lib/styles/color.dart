@@ -7,6 +7,7 @@ class AppColor {
   static const Color primaryColor = Color(0xFF7FBC8C); // diperbaiki
   static const Color dangerColor = Color(0xFFFF0000);
   static const Color darkGreen = Color(0xFF22577a);
+  static const Color primaryAdminBackground = Color(0xFF7CB9E8);
 }
 
 class AppTheme {

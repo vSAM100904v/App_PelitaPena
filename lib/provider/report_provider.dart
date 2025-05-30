@@ -2,18 +2,20 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:pa2_kelompok07/core/helpers/logger/logger.dart';
+import 'package:pa2_kelompok07/core/interface/filter_abstract.dart';
 import 'package:pa2_kelompok07/model/report/list_report_model.dart';
 import 'package:pa2_kelompok07/model/report/tracking_report_model.dart';
-import 'package:pa2_kelompok07/provider/admin_provider.dart';
-import 'package:pa2_kelompok07/provider/user_provider.dart';
 import '../model/report/full_report_model.dart';
 import '../services/api_service.dart';
 
-class ReportProvider with ChangeNotifier {
-  ResponseModel? reports;
+class ReportProvider with ChangeNotifier implements ReportFiltering {
+  // ResponseModel? reports;
   bool isLoading = false;
   String? errorMessage;
   final Logger _logger = Logger("Report Provider");
+  List<ListLaporanModel> _reports = [];
+  List<ListLaporanModel> _originalReports = [];
+  List<ListLaporanModel> get reports => _reports;
 
   DetailResponseModel? detailReport;
 
@@ -26,12 +28,75 @@ class ReportProvider with ChangeNotifier {
   Future<void> fetchReports() async {
     _setLoading(true);
     try {
-      reports = await APIService().fetchUserReports();
-      _logger.log("Reports: ${reports!.data}");
+      _logger.log("FETHING DATA DIPANGGILLLLLLLLLLLLLLLLLLL");
+      var resp = await APIService().fetchUserReports();
+      _logger.log("REPORTS: ${resp.data}");
+
+      _reports = resp.data;
+      _originalReports = List.from(_reports);
+
       _setLoading(false);
     } catch (e) {
       _handleError(e);
+    } finally {
+      _setLoading(false);
+      notifyListeners();
     }
+  }
+
+  void filterOrSortReports({String? statusFilter, bool sortByDateAsc = true}) {
+    List<ListLaporanModel> filteredReports = List.from(_originalReports);
+    print("STATUS FILTER: $statusFilter");
+    if (statusFilter != null && statusFilter.isNotEmpty) {
+      filteredReports =
+          filteredReports
+              .where(
+                (report) =>
+                    report.status.toLowerCase() == statusFilter.toLowerCase(),
+              )
+              .toList();
+    }
+
+    // Sort berdasarkan tanggal
+    filteredReports.sort((a, b) {
+      final dateA = a.tanggalKejadian;
+      final dateB = b.tanggalKejadian;
+      return sortByDateAsc ? dateA.compareTo(dateB) : dateB.compareTo(dateA);
+    });
+
+    _reports = filteredReports;
+    notifyListeners();
+  }
+
+  void sortReports({String? groupByStatus, bool sortByDateAsc = true}) {
+    List<ListLaporanModel> sortedReports = List.from(_originalReports);
+
+    // Urutan status yang diinginkan
+    const statusOrder = [
+      'Laporan masuk',
+      'Dilihat',
+      'Diproses',
+      'Selesai',
+      'Dibatalkan',
+    ];
+
+    sortedReports.sort((a, b) {
+      if (groupByStatus != null) {
+        int indexA = statusOrder.indexOf(a.status);
+        int indexB = statusOrder.indexOf(b.status);
+        indexA = indexA == -1 ? statusOrder.length : indexA;
+        indexB = indexB == -1 ? statusOrder.length : indexB;
+        final statusComparison = indexA.compareTo(indexB);
+        if (statusComparison != 0) return statusComparison;
+      }
+
+      final dateA = a.tanggalKejadian;
+      final dateB = b.tanggalKejadian;
+      return sortByDateAsc ? dateA.compareTo(dateB) : dateB.compareTo(dateA);
+    });
+    print("SPORYYYYYYYYYYYYYYY DIPANGGGILLL $groupByStatus");
+    _reports = sortedReports;
+    notifyListeners();
   }
 
   Future<void> createTracking({

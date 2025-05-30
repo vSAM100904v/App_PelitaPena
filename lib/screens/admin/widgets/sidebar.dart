@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:pa2_kelompok07/core/helpers/hooks/screen_navigator.dart';
 import 'package:pa2_kelompok07/core/helpers/toasters/toast.dart';
 import 'package:pa2_kelompok07/core/persentation/widgets/dialogs/logout_dialog.dart';
 import 'package:pa2_kelompok07/provider/user_provider.dart';
+import 'package:pa2_kelompok07/screens/client/dpmdppa/report_screen.dart';
+import 'package:pa2_kelompok07/screens/client/notification/notifikasi_screen.dart';
 import 'package:provider/provider.dart';
 import '../pages/beranda/admin_dashboard.dart';
 import '../pages/Donasi/donasi.dart';
@@ -61,19 +64,6 @@ class _AppSidebarState extends State<AppSidebar> {
               ],
             ),
           ),
-          // _buildMenuItem(
-          //   context,
-          //   icon: Icons.home,
-          //   title: 'Beranda',
-          //   isActive: true,
-          //   onTap: () {
-          //     Navigator.pop(context);
-          //     Navigator.pushReplacement(
-          //       context,
-          //       MaterialPageRoute(builder: (context) => const Beranda()),
-          //     );
-          //   },
-          // ),
 
           // _buildMenuItem(
           //   context,
@@ -146,17 +136,29 @@ class _AppSidebarState extends State<AppSidebar> {
           //     );
           //   },
           // ),
-          // _buildMenuItem(
-          //   context,
-          //   icon: Icons.help_outline,
-          //   title: 'Bantuan',
-          //   onTap: () {
-          //     Navigator.pop(context);
-          //     ScaffoldMessenger.of(
-          //       context,
-          //     ).showSnackBar(const SnackBar(content: Text('Membuka Bantuan')));
-          //   },
-          // ),
+          _buildMenuItem(
+            context,
+            icon: Icons.account_circle_outlined,
+            title: 'Laporan Saya',
+            onTap: () {
+              ScreenNavigator(cx: context).navigate(
+                const ReportScreen(isAdminView: true),
+                NavigatorTweens.rightToLeft(),
+              );
+            },
+          ),
+          _buildMenuItem(
+            context,
+            icon: Icons.notifications,
+            title: 'Notifikasi Saya',
+            isActive: false,
+            onTap: () {
+              ScreenNavigator(cx: context).navigate(
+                const NotificationScreen(),
+                NavigatorTweens.rightToLeft(),
+              );
+            },
+          ),
           _buildMenuItem(
             context,
             icon: Icons.logout,

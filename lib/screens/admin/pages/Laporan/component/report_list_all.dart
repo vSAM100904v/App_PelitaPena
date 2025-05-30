@@ -151,13 +151,13 @@ class _ReportListAllState extends State<ReportListAll> {
             return buildReportSkeleton(context);
           } else if (reportProvider.reports == null) {
             return const Center(child: Text('Gagal memuat laporan'));
-          } else if (reportProvider.reports!.data.isEmpty) {
+          } else if (reportProvider.reports!.isEmpty) {
             return const Center(child: Text('Tidak ada laporan'));
           } else {
             return ListView.builder(
-              itemCount: reportProvider.reports!.data.length,
+              itemCount: reportProvider.reports!.length,
               itemBuilder: (context, index) {
-                ListLaporanModel report = reportProvider.reports!.data[index];
+                ListLaporanModel report = reportProvider.reports![index];
                 final timeAgo = TimeAgo.format(report.updatedAt);
                 return Container(
                   margin: const EdgeInsets.all(10),

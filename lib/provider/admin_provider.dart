@@ -1,20 +1,20 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:pa2_kelompok07/core/interface/filter_abstract.dart';
 import 'package:pa2_kelompok07/core/services/pdf_service.dart';
 import 'package:pa2_kelompok07/model/report/list_report_model.dart';
 import 'package:pa2_kelompok07/provider/user_provider.dart';
 import 'package:pa2_kelompok07/services/api_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class AdminProvider extends ChangeNotifier {
+class AdminProvider extends ChangeNotifier implements ReportFiltering {
   String _adminToken = '';
 
   String get adminToken => _adminToken;
 
   List<ListLaporanModel> _reports = [];
-  List<ListLaporanModel> _originalReports =
-      []; // Tambahan untuk menyimpan data asli
+  List<ListLaporanModel> _originalReports = [];
   bool _isLoading = false;
   String? _error;
   final int _pageSize = 10;

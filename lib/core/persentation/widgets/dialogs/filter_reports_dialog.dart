@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:pa2_kelompok07/core/helpers/hooks/responsive_sizes.dart';
 import 'package:pa2_kelompok07/core/helpers/hooks/text_style.dart';
+import 'package:pa2_kelompok07/core/interface/filter_abstract.dart';
 import 'package:pa2_kelompok07/provider/admin_provider.dart';
 
 class ReportFilterDropdown extends StatefulWidget {
-  final AdminProvider adminProvider;
+  final ReportFiltering adminProvider;
   final VoidCallback onFilterApplied;
-
+  final bool justIon;
   const ReportFilterDropdown({
     required this.adminProvider,
     required this.onFilterApplied,
+    this.justIon = false,
     super.key,
   });
 
@@ -549,41 +551,48 @@ class _ReportFilterDropdownState extends State<ReportFilterDropdown>
           responsive.borderRadius(SizeScale.md),
         ),
         onTap: () => _showSortDialog(context),
-        child: Container(
-          padding: EdgeInsets.all(responsive.space(SizeScale.sm)),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(
-              responsive.borderRadius(SizeScale.md),
-            ),
-            border: Border.all(color: Colors.grey[200]!),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                Icons.tune_rounded,
-                size: responsive.fontSize(SizeScale.md),
-                color: Color(0xFF79B2E1),
-              ),
-              SizedBox(width: responsive.space(SizeScale.xs)),
-              Text(
-                'Filter',
-                style: context.textStyle.jakartaSansMedium(
-                  size: SizeScale.sm,
-                  color: Colors.grey[800],
+        child:
+            widget.justIon
+                ? Icon(
+                  Icons.tune_rounded,
+                  size: responsive.fontSize(SizeScale.md),
+                  color: Color(0xFF79B2E1),
+                )
+                : Container(
+                  padding: EdgeInsets.all(responsive.space(SizeScale.sm)),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(
+                      responsive.borderRadius(SizeScale.md),
+                    ),
+                    border: Border.all(color: Colors.grey[200]!),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.tune_rounded,
+                        size: responsive.fontSize(SizeScale.md),
+                        color: Color(0xFF79B2E1),
+                      ),
+                      SizedBox(width: responsive.space(SizeScale.xs)),
+                      Text(
+                        'Filter',
+                        style: context.textStyle.jakartaSansMedium(
+                          size: SizeScale.sm,
+                          color: Colors.grey[800],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

@@ -103,10 +103,14 @@ class _NotificationScreenState extends State<NotificationScreen>
 
   @override
   Widget build(BuildContext context) {
+    Color bgView =
+        userProvider.user?.role == 'admin'
+            ? AppColor.primaryAdminBackground
+            : AppColor.primaryColor;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Notifikasi', style: TextStyle(color: Colors.white)),
-        backgroundColor: AppColor.primaryColor,
+        backgroundColor: bgView,
         iconTheme: IconThemeData(color: Colors.white),
         actions: [
           IconButton(

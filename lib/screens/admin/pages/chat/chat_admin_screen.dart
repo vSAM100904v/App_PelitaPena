@@ -12,10 +12,18 @@ import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
 class ChatAlert extends StatelessWidget {
-  final VoidCallback onReportTap;
-  final String? userToken;
+  final VoidCallback? onReportTap; // onTap menjadi opsional
+  final String title; // Judul dengan nilai default
+  final String description; // Deskripsi dengan nilai default
 
-  const ChatAlert({super.key, required this.onReportTap, this.userToken});
+  // Constructor dengan parameter opsional
+  const ChatAlert({
+    Key? key,
+    this.onReportTap,
+    this.title = "Chat yang tersedia", // Nilai default untuk title
+    this.description =
+        "Setiap percakapan Anda direkam. Harap diingat bahwa jika Anda mengirimkan pesan yang tidak pantas, tindakan akan diambil.", // Nilai default untuk description
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +54,7 @@ class ChatAlert extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Chat yang tersedia",
+                  title, // Menggunakan title dari parameter
                   style: textStyle.onestBold(
                     size: SizeScale.lg,
                     color: Colors.blue.shade800,
@@ -54,7 +62,7 @@ class ChatAlert extends StatelessWidget {
                 ),
                 SizedBox(height: responsive.space(SizeScale.xs)),
                 Text(
-                  "Setiap percakapan Anda direkam. Harap diingat bahwa jika Anda mengirimkan pesan yang tidak pantas, tindakan akan diambil.",
+                  description, // Menggunakan description dari parameter
                   style: textStyle.dmSansRegular(
                     size: SizeScale.xs,
                     color: Colors.blue.shade700,
@@ -65,21 +73,23 @@ class ChatAlert extends StatelessWidget {
             ),
           ),
           SizedBox(width: responsive.space(SizeScale.sm)),
-          GestureDetector(
-            onTap: onReportTap,
-            child: Container(
-              padding: EdgeInsets.all(responsive.space(SizeScale.xs)),
-              decoration: BoxDecoration(
-                color: Colors.blue.shade100.withOpacity(0.5),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.report,
-                color: Colors.blue.shade800,
-                size: responsive.space(SizeScale.lg),
+          if (onReportTap !=
+              null) // Menampilkan ikon hanya jika onReportTap tidak null
+            GestureDetector(
+              onTap: onReportTap,
+              child: Container(
+                padding: EdgeInsets.all(responsive.space(SizeScale.xs)),
+                decoration: BoxDecoration(
+                  color: Colors.blue.shade100.withOpacity(0.5),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.report,
+                  color: Colors.blue.shade800,
+                  size: responsive.space(SizeScale.lg),
+                ),
               ),
             ),
-          ),
         ],
       ),
     );
@@ -109,7 +119,6 @@ class AdminChatListScreen extends StatelessWidget {
                   NavigatorTweens.bottomToTop(),
                 );
               },
-              userToken: userAdmin.userToken,
             ),
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
