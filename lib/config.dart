@@ -7,11 +7,10 @@ class Config {
   // Base API URL
 
   // // ! For Deployment Server
-  //   static const String apiUrl =
-  //       "https://backendpelitapena-production.up.railway.app";
+  static const String apiUrl = "https://besigap-production.up.railway.app";
   // ! For Devlopment Server
   // static const String apiUrl = "http://172.30.40.85:8080";
-  static const String apiUrl = "http://192.168.1.80:8080";
+  // static const String apiUrl = "http://192.168.1.80:8080";
 
   // static const String apiUrl = "https://gopelitapena-production.up.railway.app";
 

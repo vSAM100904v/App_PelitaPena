@@ -31,20 +31,37 @@ class _FormAppointmentScreenState extends State<FormAppointmentScreen> {
   ];
 
   Future<void> _selectDate(BuildContext context, bool isStartDate) async {
+    DateTime findNextValidDate(DateTime startDate) {
+      DateTime date = startDate;
+      while (true) {
+        bool isValid =
+            date.weekday >= DateTime.monday &&
+            date.weekday <= DateTime.friday &&
+            !_holidays.any(
+              (holiday) =>
+                  holiday.year == date.year &&
+                  holiday.month == date.month &&
+                  holiday.day == date.day,
+            );
+        if (isValid) return date;
+        date = date.add(const Duration(days: 1));
+      }
+    }
+
+    DateTime initialDate =
+        isStartDate
+            ? (_waktuDimulai ?? findNextValidDate(DateTime.now()))
+            : (_waktuSelesai ?? findNextValidDate(DateTime.now()));
+
     final DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate:
-          isStartDate
-              ? _waktuDimulai ?? DateTime.now()
-              : _waktuSelesai ?? DateTime.now(),
+      initialDate: initialDate,
       firstDate: DateTime.now(),
       lastDate: DateTime.now().add(const Duration(days: 365)),
       selectableDayPredicate: (date) {
-        // Hanya Senin (1) sampai Jumat (5)
         if (date.weekday < DateTime.monday || date.weekday > DateTime.friday) {
           return false;
         }
-        // Cek hari libur
         for (final d in _holidays) {
           if (d.year == date.year &&
               d.month == date.month &&
@@ -72,6 +89,7 @@ class _FormAppointmentScreenState extends State<FormAppointmentScreen> {
         );
       },
     );
+
     if (pickedDate != null) {
       final TimeOfDay? pickedTime = await showTimePicker(
         context: context,
